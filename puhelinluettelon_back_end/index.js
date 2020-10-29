@@ -34,6 +34,17 @@ app.get("/info", (require, response) => {
     response.send(returnString);
 });
 
+app.get("/api/persons/:id", (require, response) => {
+    const id = Number(require.params.id);
+    const person = persons.find((person) => person.id === id);
+
+    if (person) {
+        response.json(person);
+    } else {
+        response.status(404).end();
+    }
+});
+
 const port = 3001;
 app.listen(port);
 console.log(`server running on port ${port}`);
