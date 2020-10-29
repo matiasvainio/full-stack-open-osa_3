@@ -30,7 +30,7 @@ app.get("/api/persons", (require, response) => {
 
 app.get("/info", (require, response) => {
     const returnString = `<p>Phonebook has info for ${persons.length} people</p>
-    <p>${new Date().toISOString()}</p>`;
+    <p>${new Date().toString()}</p>`;
     response.send(returnString);
 });
 
