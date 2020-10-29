@@ -26,18 +26,18 @@ let persons = [
     },
 ];
 
-app.get("/api/persons", (require, response) => {
+app.get("/api/persons", (request, response) => {
     response.json(persons);
 });
 
-app.get("/info", (require, response) => {
+app.get("/info", (request, response) => {
     const returnString = `<p>Phonebook has info for ${persons.length} people</p>
     <p>${new Date().toString()}</p>`;
     response.send(returnString);
 });
 
-app.get("/api/persons/:id", (require, response) => {
-    const id = Number(require.params.id);
+app.get("/api/persons/:id", (request, response) => {
+    const id = Number(request.params.id);
     const person = persons.find((person) => person.id === id);
 
     if (person) {
@@ -47,12 +47,36 @@ app.get("/api/persons/:id", (require, response) => {
     }
 });
 
-app.delete("/api/persons/:id", (require, response) => {
-    const id = Number(require.params.id);
+app.delete("/api/persons/:id", (request, response) => {
+    const id = Number(request.params.id);
     persons = persons.filter((person) => person.id !== id);
 
     response.status(204).end();
 });
+
+app.post("/api/persons", (request, response) => {
+    const body = request.body;
+    console.log(body);
+
+    if (!body.name) {
+        return response.status(400).json({
+            error: "name missing",
+        });
+    }
+
+    const person = {
+        name: body.name,
+        number: body.number,
+        id: generateRandom(),
+    };
+
+    persons.concat(person);
+    response.json(person);
+});
+
+const generateRandom = () => {
+    return Math.floor(Math.random() * 10000) + 1000;
+};
 
 const port = 3001;
 app.listen(port);
