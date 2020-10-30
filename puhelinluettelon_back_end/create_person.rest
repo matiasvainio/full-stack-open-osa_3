@@ -1,4 +1,5 @@
-POST http://localhost:3001/api/persons/
+https://fast-tundra-12885.herokuapp.com/api/persons
+
 Content-Type: application/json
 
 {
