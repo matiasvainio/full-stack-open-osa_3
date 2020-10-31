@@ -1,1 +1,0 @@
-{"version":3,"sources":["webpack://src/app.css"],"names":[],"mappings":"AAAA,SACI,WAAY,CACZ,WAAY,CACZ,aAAc,CACd,sBACJ","file":"main.b5516bcb.chunk.css","sourcesContent":[".success {\n    color: green;\n    padding: 1em;\n    font-size: 2em;\n    border: 5px solid green\n}"]}

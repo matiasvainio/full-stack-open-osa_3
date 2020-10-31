@@ -1,8 +1,9 @@
-https://fast-tundra-12885.herokuapp.com/api/persons
+POST http://localhost:3001/api/persons
 
 Content-Type: application/json
 
 {
-    "name": "Matti Meikäläinen",
-    "number": "050-123478954"
+    "id": "666",
+    "name": "Testing post",
+    "number": "7357"
 }

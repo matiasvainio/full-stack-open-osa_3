@@ -10,6 +10,7 @@ const App = () => {
     const [newName, setNewName] = useState("");
     const [number, setNumber] = useState("");
     const [addedMessage, setAddedMessage] = useState(null);
+    const [errorMessage, setErrorMessage] = useState(null);
 
     useEffect(() => {
         personService.getAll().then((returnedPersons) => {
@@ -26,17 +27,41 @@ const App = () => {
 
         const alreadyOnList = persons.find((o) => o.name === newName);
 
-        if (alreadyOnList === undefined) {
-            personService.create(personObject).then((returnedPerson) => {
-                setPersons(persons.concat(returnedPerson));
-            });
-            setPersons(persons.concat(personObject));
-            setAddedMessage(`${personObject.name} was added to numbers`);
-            setTimeout(() => {
-                setAddedMessage(null);
-            }, 2000);
-            setNewName("");
-            setNumber("");
+        if (!alreadyOnList) {
+            const createPerson = async () => {
+                const a = await personService
+                    .create(personObject)
+                    .then((returnedPerson) => {
+                        return returnedPerson;
+                    })
+                    .catch((error) => {
+                        return error.response;
+                    });
+
+                return a;
+            };
+
+            const addPerson = async () => {
+                const a = await createPerson();
+                if (a.status !== 400) {
+                    setPersons(persons.concat(a));
+                    setAddedMessage(
+                        `${personObject.name} was added to numbers`
+                    );
+                    setTimeout(() => {
+                        setAddedMessage(null);
+                    }, 2000);
+                    setNewName("");
+                    setNumber("");
+                } else {
+                    setErrorMessage(a.request.response);
+                    setTimeout(() => {
+                        setErrorMessage(null);
+                    }, 2000);
+                }
+            };
+
+            addPerson();
         } else {
             if (
                 window.confirm(
@@ -44,6 +69,8 @@ const App = () => {
                 )
             ) {
                 updatePerson(alreadyOnList.id, personObject);
+                setNewName("");
+                setNumber("");
             }
         }
     };
@@ -89,6 +116,7 @@ const App = () => {
     return (
         <div>
             <h2>Phonebook</h2>
+            <Notification message={errorMessage} type="fail" />
             <h2>Search</h2>
             <Filter onChange={handleFilter} />
             <form onSubmit={addName}>
@@ -105,19 +133,23 @@ const App = () => {
                     <button type="submit">add</button>
                 </div>
             </form>
-            <Notification message={addedMessage} />
+            <Notification message={addedMessage} type="success" />
             <h2>Numbers</h2>
             <Person persons={persons} deletePerson={deletePerson} />
         </div>
     );
 };
 
-const Notification = ({ message }) => {
+const Notification = ({ message, type }) => {
     if (message === null) {
         return null;
     }
 
-    return <div className="success">{message}</div>;
+    if (type === "fail") {
+        return <div className="fail">{message}</div>;
+    } else {
+        return <div className="success">{message}</div>;
+    }
 };
 
 export default App;
